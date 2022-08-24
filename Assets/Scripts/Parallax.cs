@@ -6,9 +6,8 @@ using Cinemachine;
 public class Parallax : MonoBehaviour
 {
     public Camera cam;
-    private SpriteRenderer _renderer;
     public float parallaxAmount;
-    private float _length, _startPos;
+    private float _startPos;
     private float _dist;
     
     private Vector2 _previousCamPos;
@@ -17,8 +16,7 @@ public class Parallax : MonoBehaviour
     void Start()
     {
         _startPos = transform.position.x;
-        _length = GetComponent<SpriteRenderer>().bounds.size.x;
-        _renderer = GetComponent<SpriteRenderer>();
+
         _previousCamPos = cam.transform.position;
     }
 
