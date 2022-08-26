@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Ground
   - Water
+  - Key
+  - Level
   layers:
   - Default
   - TransparentFX
@@ -14,11 +16,11 @@ TagManager:
   - Water
   - UI
   - Player
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Ignore
+  - To Ignore
+  - Stick Wall
+  - Laser
+  - Level
   - 
   - 
   - 

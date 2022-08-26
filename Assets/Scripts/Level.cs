@@ -13,9 +13,11 @@ public class Level : MonoBehaviour
             _playerIsHere = value;
         }
     }
-    
+    public PlayerSpawner playerSpawner;
     public bool completed;
     public List<Condition> conditions;
+    public Bool boolCondition;
+    public int maxClones;
 
     private PolygonCollider2D _c;
 
@@ -25,12 +27,34 @@ public class Level : MonoBehaviour
         _c = GetComponent<PolygonCollider2D>();
     }
 
+    void LateUpdate()
+    {
+        bool state;
+
+        state = boolCondition == Bool.And;
+
+        foreach(var condition in conditions)
+        {
+            switch(boolCondition)
+            {
+                case Bool.Or:
+                state = state || condition.state;
+                    break;
+                case Bool.And:
+                state = state && condition.state;
+                    break;
+            }
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D col)
     {
         if(col.gameObject.CompareTag("Player"))
         {
-            if(col.GetComponent<Clone>().controlled)
+            var clone = col.GetComponent<Clone>();
+            if(clone.controlled)
                 playerIsHere = true;
+            GameManager.currentLevel = this;
         }
     }
 

@@ -107,10 +107,10 @@ TextureImporter:
       name: button_0
       rect:
         serializedVersion: 2
-        x: 14
-        y: 6
-        width: 2
-        height: 4
+        x: 8
+        y: 4
+        width: 8
+        height: 8
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -120,27 +120,6 @@ TextureImporter:
       bones: []
       spriteID: 3abc3053c20ad63449969c1085444d32
       internalID: -792573081
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: button_1
-      rect:
-        serializedVersion: 2
-        x: 15
-        y: 6
-        width: 1
-        height: 4
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 142d7a9c45cdfba40b7b258baf581742
-      internalID: -236413429
       vertices: []
       indices: 
       edges: []

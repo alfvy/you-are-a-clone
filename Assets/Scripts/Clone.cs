@@ -3,10 +3,15 @@ using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Random = UnityEngine.Random;
 
 public class Clone : MonoBehaviour
 {
+    [Header("Debug")]
+    public bool onStickWall;
+
     [Header("Character Values")]
+    public int number = 0;
     [SerializeField] private bool _controlled;
     public bool controlled {
         get => _controlled; 
@@ -15,6 +20,7 @@ public class Clone : MonoBehaviour
             _controlled = value;
         }
     }
+    public float direction = 1;
     public float walkSpeed = 2.6f;
     public float jumpHoldDuration = 0.2f;
     public float jumpSpeed = 3.9f;
@@ -25,28 +31,34 @@ public class Clone : MonoBehaviour
     public Vector2 inputVector;
     public Rigidbody2D rb;
     public TextMeshPro text;
+    public List<Key> keys;
 
+    [Header("Audio Clips")]
+    [SerializeField] AudioClip step;
+    [SerializeField] AudioClip jump;
+    [SerializeField] AudioClip spawnClone;
+
+    private CloneSpawnChecker _spawn;
     private CloneManager _cloneManager;
     private Vector2 _deafultHurtboxSize;
     private Transform _transform;
     private Rigidbody2D _rigidbody;
     private CapsuleCollider2D _bodyCollider;
     private Animator _animator;
+    private AudioSource _as;
     private bool _lastOnGround;
     private static int _groundLayerMask, _oneWayGroundLayerMask;
-    private float _jumpTimer, _direction, _lastDirection;
+    private float _jumpTimer, _lastDirection;
     private float _walkTime = 0;
     private float _lastGroundedAtTime = -1f;
-    // private static readonly int OnGroundState       = Animator.StringToHash("OnGround");
-    // private static readonly int IdleState           = Animator.StringToHash("Idle");
-    // private static readonly int HorizontalMovement  = Animator.StringToHash("HorizontalMovement");
-    // private static readonly int VerticalMovement    = Animator.StringToHash("VerticalMovement");
+    private float spawnCooldown = 0;
 
     int Walking = Animator.StringToHash("Walking");
     int Jumping = Animator.StringToHash("Jumping");
     int Falling = Animator.StringToHash("Falling");
     int FallingWithMovement = Animator.StringToHash("Falling with Velocity");
     int Idle = Animator.StringToHash("Idle");
+    int Spawn = Animator.StringToHash("Spawn");
 
     private void Awake()
     {
@@ -59,13 +71,18 @@ public class Clone : MonoBehaviour
         _animator = GetComponent<Animator>();
         _cloneManager = FindObjectOfType<CloneManager>();
         text = GetComponentInChildren<TextMeshPro>();
+        _spawn = GetComponentInChildren<CloneSpawnChecker>();
+        _as = GetComponent<AudioSource>();
         // Application.targetFrameRate = 60;
     }
 
     private void Start()
     {
-        _direction = 1;
+        direction = 1;
         _lastDirection = 1;
+        if(GameObject.FindObjectOfType<CloneManager>().clones.Count == 1)
+            controlled = true;
+        _animator.CrossFade(Spawn, 0, 0, 0, 0);
     }
 
     void Reset()
@@ -75,34 +92,35 @@ public class Clone : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(!controlled) return;
-        // walk direction
-        _transform.localScale = new Vector2(_lastDirection, 1);
+        if(controlled) {
+            // walk direction
+            _transform.localScale = new Vector2(_lastDirection, 1);
 
-        if (onGround)
-            _rigidbody.velocity = new Vector2(inputVector.x * walkSpeed, _rigidbody.velocity.y);
-        else if (!onGround)
-            _rigidbody.velocity = new Vector2(inputVector.x * walkSpeed * 0.75f, _rigidbody.velocity.y);
-        
-        // timed jump
-        // if grounded reset the last grounded time
-        if (onGround || onOneWayGround)
-            _lastGroundedAtTime = Time.time;
+            if (onGround)
+                _rigidbody.velocity = new Vector2(inputVector.x * walkSpeed, _rigidbody.velocity.y);
+            else if (!onGround)
+                _rigidbody.velocity = new Vector2(inputVector.x * walkSpeed * 0.75f, _rigidbody.velocity.y);
             
-        // get the jump button and check if the last grounded time isn't near the current time
-        // plus the time the jump button is held
-        if (Input.GetButton("Jump") 
-        && Time.time < _lastGroundedAtTime + jumpHoldDuration && canJump)
-            // _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, jumpSpeed);
-        {
-            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, 0f);
-            _rigidbody.angularVelocity = 0f;
-            _rigidbody.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
+            // timed jump
+            // if grounded reset the last grounded time
+            if (onGround)
+                _lastGroundedAtTime = Time.time;
+                
+            // get the jump button and check if the last grounded time isn't near the current time
+            // plus the time the jump button is held
+            if (Input.GetButton("Jump") 
+            && Time.time < _lastGroundedAtTime + jumpHoldDuration && canJump)
+            {
+                _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, 0f);
+                _rigidbody.angularVelocity = 0f;
+                _rigidbody.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
+            }
+            if (!onGround || _rigidbody.velocity.y < 0)
+                _rigidbody.velocity += Vector2.up * Physics2D.gravity.y * 2.5f * Time.deltaTime;
+            
+        } else {
+            _rigidbody.velocity = new Vector2(_rigidbody.velocity.x * 0.25f, _rigidbody.velocity.y);
         }
-        if (!Input.GetButton("Jump") && !onGround || _rigidbody.velocity.y < 0)
-            _rigidbody.velocity += Vector2.up * Physics2D.gravity.y * 2.5f * Time.deltaTime;
-        
-
         _lastOnGround = onGround || onOneWayGround;
     }
     
@@ -110,9 +128,11 @@ public class Clone : MonoBehaviour
     {
         // update the players state
         onGround = _groundCheck.ground;
+        onStickWall = false;
         onOneWayGround = _groundCheck.oneWayGround;
-        inWater = _groundCheck.water;
+        // inWater = _groundCheck.water;
         idle = Mathf.Abs(_rigidbody.velocity.x) < 0.1f; 
+        spawnCooldown += Time.deltaTime;
 
         if(!controlled) return;
 
@@ -123,9 +143,36 @@ public class Clone : MonoBehaviour
         if (Input.GetButton("Jump")) 
             _jumpTimer += Time.deltaTime;
 
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetButtonDown("Jump"))
+            PlayJump();
+
+        var spawnDirection = onGround ? Vector3.right : new Vector3(1f, direction > 0 ? -1f : 1f, 0f);
+        if (Input.GetKeyDown(KeyCode.R) && _spawn.canSpawn 
+        && !(_cloneManager.clones.Count >= _cloneManager.maxClones) && spawnCooldown > 0.3f)
+        {
             _cloneManager.AddClone(Instantiate(clonePrefab,
-            transform.position + (Vector3.right * _direction), Quaternion.identity));
+            transform.position + (spawnDirection * direction), Quaternion.identity));
+            if (!onGround && _rigidbody.velocity.y > 0) {
+                _rigidbody.AddForce(Vector2.up * 4f, ForceMode2D.Impulse);
+            } else if (!onGround && _rigidbody.velocity.y < 0) {
+                _rigidbody.AddForce(Vector2.up * 6f, ForceMode2D.Impulse);
+            }
+            _as.PlayOneShot(spawnClone);
+            spawnCooldown = 0;
+        }
+        else if (Input.GetKeyDown(KeyCode.R) && !_spawn.canSpawn 
+        && !(_cloneManager.clones.Count >= _cloneManager.maxClones) && spawnCooldown > 0.3f)
+        {
+            _cloneManager.AddClone(Instantiate(clonePrefab,
+            transform.position + (spawnDirection * direction), Quaternion.identity));
+            if (!onGround && _rigidbody.velocity.y > 0) {
+                _rigidbody.AddForce(Vector2.up * 4f, ForceMode2D.Impulse);
+            } else if (!onGround && _rigidbody.velocity.y < 0) {
+                _rigidbody.AddForce(Vector2.up * 6f, ForceMode2D.Impulse);
+            }
+            _as.PlayOneShot(spawnClone);
+            spawnCooldown = 0;
+        }
 
         // if the player is ground and the jump counter is less than the apex of the jump
         // or the player released the jump button 
@@ -142,12 +189,11 @@ public class Clone : MonoBehaviour
 
         // if (Input.GetButtonDown("Jump") && onGround)
 
-        _lastDirection = _direction == _lastDirection ? _lastDirection : _direction;
+        _lastDirection = direction == _lastDirection ? _lastDirection : direction;
         FlipSprite();
     }
 
     int currentState;
-
 
     private void LateUpdate()
     {
@@ -179,11 +225,20 @@ public class Clone : MonoBehaviour
         // based on player input not velocity
         if (Input.GetAxis("Horizontal") > 0)
         {
-            _direction = 1;
+            direction = 1;
         }
         else if (Input.GetAxis("Horizontal") < 0)
         {
-            _direction = -1;
+            direction = -1;
         }
     }
+
+    public void PlayStep()
+    {
+        _as.pitch = Random.Range(0.7f,1f);
+        _as.PlayOneShot(step);
+        _as.pitch = 1f;
+    }
+
+    public void PlayJump() => _as.PlayOneShot(jump);
 }
