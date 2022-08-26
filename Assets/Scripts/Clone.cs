@@ -148,7 +148,7 @@ public class Clone : MonoBehaviour
 
         var spawnDirection = onGround ? Vector3.right : new Vector3(1f, direction > 0 ? -1f : 1f, 0f);
         if (Input.GetKeyDown(KeyCode.R) && _spawn.canSpawn 
-        && !(_cloneManager.clones.Count >= _cloneManager.maxClones) && spawnCooldown > 0.3f)
+        && !(_cloneManager.clones.Count >= _cloneManager.maxClones) && spawnCooldown > 0.125f)
         {
             _cloneManager.AddClone(Instantiate(clonePrefab,
             transform.position + (spawnDirection * direction), Quaternion.identity));
@@ -161,7 +161,7 @@ public class Clone : MonoBehaviour
             spawnCooldown = 0;
         }
         else if (Input.GetKeyDown(KeyCode.R) && !_spawn.canSpawn 
-        && !(_cloneManager.clones.Count >= _cloneManager.maxClones) && spawnCooldown > 0.3f)
+        && !(_cloneManager.clones.Count >= _cloneManager.maxClones) && spawnCooldown > 0.125f)
         {
             _cloneManager.AddClone(Instantiate(clonePrefab,
             transform.position + (spawnDirection * direction), Quaternion.identity));
@@ -202,7 +202,6 @@ public class Clone : MonoBehaviour
         _animator.CrossFade(state, 0, 0, 0, 0);
         currentState = state;
     }
-
 
     private int Animate()
     {

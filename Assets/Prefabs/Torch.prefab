@@ -145,8 +145,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   light: {fileID: 2811642505465191871}
-  minIntensity: 1.06
-  maxIntensity: 4.43
+  minIntensity: 0.55
+  maxIntensity: 2.34
   smoothing: 15
 --- !u!198 &8596203372137712886
 ParticleSystem:

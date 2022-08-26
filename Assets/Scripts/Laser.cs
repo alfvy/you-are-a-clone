@@ -5,9 +5,12 @@ using UnityEngine;
 public class Laser : MonoBehaviour
 {
     public Level level;
+    public Bool boolCondition;
+    public List<Condition> conditions;
     public float defDistanceRay = 100;
     public Transform firePoint;
     private LineRenderer _lineRenderer;
+
 
     // draw a line from the fire point to a hit on a raycast starting from the fire point
     void Start()
@@ -27,15 +30,32 @@ public class Laser : MonoBehaviour
                 GameManager.CloneManager.RemoveClone(hit.collider.gameObject);
                 Destroy(hit.collider.gameObject);
                 level.playerSpawner.RespawnPlayer();
+                print("Died from a lazer");
             } else if (hit.collider.gameObject.CompareTag("Player") && GameManager.CloneManager.clones.Count > 1)
             {
                 GameManager.CloneManager.RemoveClone(hit.collider.gameObject);
                 Destroy(hit.collider.gameObject);
+                print("Died from a lazer");
             }
         }
         else
         {
             _lineRenderer.SetPosition(1, firePoint.position + firePoint.right * defDistanceRay);
+        }
+
+        var state = boolCondition == Bool.And;
+
+        foreach(var condition in conditions)
+        {
+            switch(boolCondition)
+            {
+                case Bool.Or:
+                state = state || condition.state;
+                    break;
+                case Bool.And:
+                state = state && condition.state;
+                    break;
+            }
         }
     }
 }

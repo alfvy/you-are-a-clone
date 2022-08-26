@@ -26,8 +26,8 @@ public class GameStarter : MonoBehaviour
                 uiObject.SetActive(false);
             }
             cloneCounter.SetActive(true);
-            parallaxTrigger.SetActive(false);
             playerSpawner.SpawnPlayer();
+            parallaxTrigger.SetActive(true);
             Destroy(this);
         }
     }
@@ -38,12 +38,12 @@ public class GameStarter : MonoBehaviour
             cm.maxClones = 6;
             cm.death = death;
         gameObject.AddComponent<GameManager>();
-        playerSpawner.SpawnPlayer();
         foreach (GameObject uiObject in uiObjects)
         {
             uiObject.SetActive(false);
         }
         cloneCounter.SetActive(true);
+        playerSpawner.SpawnPlayer();
         parallaxTrigger.SetActive(true);
         Destroy(this);
     }

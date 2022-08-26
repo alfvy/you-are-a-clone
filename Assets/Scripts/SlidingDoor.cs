@@ -12,8 +12,8 @@ public class SlidingDoor : MonoBehaviour
     [SerializeField] AudioClip open, close;
     public Condition[] conditions;
     public Bool boolCondition;
-    public bool needsKey;
-    public Key key;
+    // public bool needsKey;
+    // public Key key;
 
 
     private Animator _a;
@@ -33,10 +33,10 @@ public class SlidingDoor : MonoBehaviour
     {
         bool state;
 
-        if (needsKey)
-        {
-            return;
-        } else {
+        // if (needsKey)
+        // {
+        //     return;
+        // } else {
             state = boolCondition == Bool.And;
 
             foreach(var condition in conditions)
@@ -51,7 +51,7 @@ public class SlidingDoor : MonoBehaviour
                         break;
                 }
             }
-        }
+        // }
 
         _a.SetBool(Active, state);
     }
@@ -61,14 +61,14 @@ public class SlidingDoor : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D other)
     {
-        if(other.gameObject.tag == "Player" && needsKey)
-        {
-            var playerKeys = other.gameObject.GetComponent<Clone>().keys;
-            if(playerKeys.Any(k=> key.Equals(k)))
-            {
-                _a.SetBool(Active, true);
-            }
-        }    
+        // if(other.gameObject.tag == "Player" && needsKey)
+        // {
+        //     var playerKeys = other.gameObject.GetComponent<Clone>().keys;
+        //     if(playerKeys.Any(k=> key.Equals(k)))
+        //     {
+        //         _a.SetBool(Active, true);
+        //     }
+        // }    
     }
 
     public void DisableCollision(int set)

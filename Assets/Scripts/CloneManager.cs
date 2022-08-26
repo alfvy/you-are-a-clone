@@ -1,7 +1,9 @@
+using System.Linq.Expressions;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class CloneManager : MonoBehaviour
 {
@@ -124,6 +126,40 @@ public class CloneManager : MonoBehaviour
             clones = clones.OrderBy(
             x => Vector2.Distance(this.transform.position, x.transform.position)
             ).ToList();
+        }
+    }
+
+    public void RemoveClone(Clone clone)
+    {
+        AudioSource.PlayClipAtPoint(death, clone.transform.position);  
+        if(clone.controlled && clones.Count > 1)
+        {
+           foreach(var c in clones)
+            {
+                if(c != clone)
+                {
+                    c.controlled = true;
+                    break;
+                }
+            }
+        }
+        clones.Remove(clone);
+        if(clones.Count > 1)
+        {
+            clones = clones.OrderBy(
+            x => Vector2.Distance(this.transform.position, x.transform.position)
+            ).ToList();
+        }
+    }
+
+    public void ChangeLevel(Level level)
+    {
+        maxClones = level.maxClones;
+        GameManager.currentLevel = level;
+        clones.RemoveAll(c=>!c.controlled);
+        foreach(var clone in FindObjectsOfType<Clone>())
+        {
+            if(!clone.controlled) Destroy(clone.gameObject);
         }
     }
 

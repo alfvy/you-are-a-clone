@@ -11,6 +11,7 @@ public class ParralaxTrigger : MonoBehaviour
 
     void Update()
     {
+        if(!GameManager.CloneManager.currentClone) return;
         distance = GameManager.CloneManager.currentClone.transform.position.x - transform.position.x;
         parralaxScale = 1 - (distance / 20);
         // if the player is to the right of this object dim the green feild and brighten the parralax objects

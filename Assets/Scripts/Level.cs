@@ -45,6 +45,12 @@ public class Level : MonoBehaviour
                     break;
             }
         }
+
+        if(playerIsHere)
+        {
+            GameManager.currentLevel = this;
+            GameManager.CloneManager.maxClones = maxClones;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D col)
@@ -53,8 +59,10 @@ public class Level : MonoBehaviour
         {
             var clone = col.GetComponent<Clone>();
             if(clone.controlled)
+            {
                 playerIsHere = true;
-            GameManager.currentLevel = this;
+                // GameManager.CloneManager.EnterLevel(this, maxClones, clone);
+            }
         }
     }
 
