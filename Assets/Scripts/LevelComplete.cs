@@ -15,6 +15,11 @@ public class LevelComplete : MonoBehaviour
             {
                 level.completed = true;
                 GameManager.CloneManager.ChangeLevel(nextLevel);
+                if (PlayerPrefs.GetInt(GameManager.Level) < level.number)
+                {
+                    PlayerPrefs.SetInt(GameManager.Level, level.number);
+                    PlayerPrefs.Save();
+                }
             }
         }    
     }

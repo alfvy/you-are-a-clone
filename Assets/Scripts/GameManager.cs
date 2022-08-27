@@ -17,11 +17,6 @@ public class GameManager : MonoBehaviour
         VirtualCamera = GameObject.FindObjectOfType<CinemachineVirtualCamera>();
         CameraConfiner = GameObject.FindObjectOfType<CinemachineConfiner2D>();
         CloneManager = GetComponent<CloneManager>();
-        PlayerPrefs.SetInt(PlayedBefore, 0);
-        PlayerPrefs.SetInt(Level, 0);
-        PlayerPrefs.SetFloat(PlayTime, 0);
-        PlayerPrefs.SetInt(JumpCount, 0);
-        PlayerPrefs.Save();
     }
 
     void Reset()

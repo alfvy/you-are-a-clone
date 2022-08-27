@@ -18,6 +18,7 @@ public class Level : MonoBehaviour
     public List<Condition> conditions;
     public Bool boolCondition;
     public int maxClones;
+    public int number;
 
     private PolygonCollider2D _c;
 

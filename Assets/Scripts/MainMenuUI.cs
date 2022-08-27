@@ -23,11 +23,11 @@ public class MainMenuUI : MonoBehaviour
     {
         if(PlayerPrefs.GetInt(GameManager.PlayedBefore) == 1)
         {
-            _a.CrossFade(StartAndQuit, 0, 0, 0, 0);
+            _a.CrossFade(BringUpButtons, 0, 0, 0, 0);
         }
         else
         {
-            _a.CrossFade(BringUpButtons, 0, 0, 0, 0);
+            _a.CrossFade(StartAndQuit, 0, 0, 0, 0);
         }
     }
 }

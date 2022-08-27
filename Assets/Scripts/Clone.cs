@@ -8,7 +8,7 @@ using Random = UnityEngine.Random;
 public class Clone : MonoBehaviour
 {
     [Header("Debug")]
-    public bool onStickWall;
+    public bool canDoubleJump;
 
     [Header("Character Values")]
     public int number = 0;
@@ -128,7 +128,6 @@ public class Clone : MonoBehaviour
     {
         // update the players state
         onGround = _groundCheck.ground;
-        onStickWall = false;
         onOneWayGround = _groundCheck.oneWayGround;
         // inWater = _groundCheck.water;
         idle = Mathf.Abs(_rigidbody.velocity.x) < 0.1f; 
@@ -143,7 +142,7 @@ public class Clone : MonoBehaviour
         if (Input.GetButton("Jump")) 
             _jumpTimer += Time.deltaTime;
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButtonDown("Jump") && onGround)
             PlayJump();
 
         var spawnDirection = onGround ? Vector3.right : new Vector3(1f, direction > 0 ? -1f : 1f, 0f);
