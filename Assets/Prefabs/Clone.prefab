@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2146496675}
   - component: {fileID: 2146496678}
   - component: {fileID: 2146496677}
+  - component: {fileID: 2826435520878911614}
   m_Layer: 8
   m_Name: SpawnChecker
   m_TagString: Untagged
@@ -72,6 +73,21 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.8697853, y: 0.21024513}
   m_EdgeRadius: 0
+--- !u!114 &2826435520878911614
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2146496674}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceae6fdf6369a574fa21d296e1938356, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grabbing: 0
+  grabbedClone: {fileID: 0}
+  grabPos: {fileID: 4002084131266446465}
 --- !u!1 &2356260060881116947
 GameObject:
   m_ObjectHideFlags: 0
@@ -184,6 +200,7 @@ Transform:
   - {fileID: 2356260060881116944}
   - {fileID: 4017548992819136845}
   - {fileID: 2146496675}
+  - {fileID: 4002084131266446465}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -318,7 +335,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9a1b7d3230bff59419167991af293e7d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  onStickWall: 0
+  canDoubleJump: 0
   number: 0
   _controlled: 1
   direction: 1
@@ -332,6 +349,10 @@ MonoBehaviour:
   idle: 0
   jumping: 0
   canJump: 0
+  jumpPowerup: 0
+  speedPowerUp: 0
+  grabbed: 0
+  grabbing: 0
   _groundCheck: {fileID: 2356260060881116945}
   clonePrefab: {fileID: 2356260061250570066}
   inputVector: {x: 0, y: 0}
@@ -341,7 +362,6 @@ MonoBehaviour:
   step: {fileID: 8300000, guid: 9abe76b0874332d40bee940b95acb5b0, type: 3}
   jump: {fileID: 8300000, guid: 2862be6c2ba1084458dc1e637d1fd8c3, type: 3}
   spawnClone: {fileID: 8300000, guid: 88d9665b2a6ad7149961524bb8c1c139, type: 3}
-  death: {fileID: 8300000, guid: 8d3b83bc9d27d1345b1e43b9739e9a96, type: 3}
 --- !u!114 &5139002445581875583
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,7 +388,7 @@ MonoBehaviour:
   - {x: 0.1304332, y: -0.39130387, z: 0}
   m_ShapePathHash: 97769045
   m_Mesh: {fileID: 0}
-  m_InstanceId: 46344
+  m_InstanceId: 91534
 --- !u!82 &-8776252501139298044
 AudioSource:
   m_ObjectHideFlags: 0
@@ -465,6 +485,37 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &3812609532494517969
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4002084131266446465}
+  m_Layer: 0
+  m_Name: GrabPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4002084131266446465
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3812609532494517969}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.098, z: -0.0033326237}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2356260061250570065}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7782330438368393445
 GameObject:
   m_ObjectHideFlags: 0

@@ -20,12 +20,13 @@ public class Clone : MonoBehaviour
             _controlled = value;
         }
     }
+
     public float direction = 1;
     public float walkSpeed = 2.6f;
     public float jumpHoldDuration = 0.2f;
     public float jumpSpeed = 3.9f;
     public BoxCollider2D _hurtbox;
-    public bool onGround, onOneWayGround, inWater, idle, jumping, canJump;
+    public bool onGround, onOneWayGround, inWater, idle, jumping, canJump, jumpPowerup, speedPowerUp, grabbed, grabbing;
     [SerializeField] LayerCheck _groundCheck;
     public GameObject clonePrefab;
     public Vector2 inputVector;
@@ -46,12 +47,15 @@ public class Clone : MonoBehaviour
     private CapsuleCollider2D _bodyCollider;
     private Animator _animator;
     private AudioSource _as;
+    private Transform grabPos;
     private bool _lastOnGround;
     private static int _groundLayerMask, _oneWayGroundLayerMask;
     private float _jumpTimer, _lastDirection;
     private float _walkTime = 0;
     private float _lastGroundedAtTime = -1f;
     private float spawnCooldown = 0;
+    private float jumpBoost = 6;
+    private float speedBoost = 3;
 
     int Walking = Animator.StringToHash("Walking");
     int Jumping = Animator.StringToHash("Jumping");
@@ -92,20 +96,22 @@ public class Clone : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(controlled) {
+        if(controlled && !grabbed) {
             // walk direction
             _transform.localScale = new Vector2(_lastDirection, 1);
 
+            var speed = walkSpeed + (speedPowerUp ? speedBoost : 0);
             if (onGround)
-                _rigidbody.velocity = new Vector2(inputVector.x * walkSpeed, _rigidbody.velocity.y);
+                _rigidbody.velocity = new Vector2(inputVector.x * speed, _rigidbody.velocity.y);
             else if (!onGround)
-                _rigidbody.velocity = new Vector2(inputVector.x * walkSpeed * 0.75f, _rigidbody.velocity.y);
+                _rigidbody.velocity = new Vector2(inputVector.x * speed * 0.75f, _rigidbody.velocity.y);
             
             // timed jump
             // if grounded reset the last grounded time
             if (onGround)
                 _lastGroundedAtTime = Time.time;
                 
+            var height = jumpSpeed + (jumpPowerup ? jumpBoost : 0);
             // get the jump button and check if the last grounded time isn't near the current time
             // plus the time the jump button is held
             if (Input.GetButton("Jump") 
@@ -113,11 +119,13 @@ public class Clone : MonoBehaviour
             {
                 _rigidbody.velocity = new Vector2(_rigidbody.velocity.x, 0f);
                 _rigidbody.angularVelocity = 0f;
-                _rigidbody.AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
+                _rigidbody.AddForce(Vector2.up * height, ForceMode2D.Impulse);
             }
             if (!onGround || _rigidbody.velocity.y < 0)
                 _rigidbody.velocity += Vector2.up * Physics2D.gravity.y * 2.5f * Time.deltaTime;
             
+        } else if(grabbed) {
+            _transform.position = grabPos.position; 
         } else {
             _rigidbody.velocity = new Vector2(_rigidbody.velocity.x * 0.25f, _rigidbody.velocity.y);
         }
@@ -133,7 +141,19 @@ public class Clone : MonoBehaviour
         idle = Mathf.Abs(_rigidbody.velocity.x) < 0.1f; 
         spawnCooldown += Time.deltaTime;
 
-        if(!controlled) return;
+        if (grabbed && controlled)
+        {
+            _cloneManager.clones.Find(c=> !c.grabbed || !c.controlled).controlled = true;
+            controlled = false;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Q) && grabbed)
+        {
+            grabbed = false;
+            _rigidbody.isKinematic = false;
+        }
+
+        if (!controlled) return;
 
         // get the horizontal and vertical axes into an input vector
         inputVector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
@@ -142,11 +162,11 @@ public class Clone : MonoBehaviour
         if (Input.GetButton("Jump")) 
             _jumpTimer += Time.deltaTime;
 
-        if (Input.GetButtonDown("Jump") && onGround)
+        if (Input.GetButtonDown("Jump") && (onGround || _lastOnGround))
             PlayJump();
 
         var spawnDirection = onGround ? Vector3.right : new Vector3(1f, direction > 0 ? -1f : 1f, 0f);
-        if (Input.GetKeyDown(KeyCode.R) && _spawn.canSpawn 
+        if (Input.GetKeyDown(KeyCode.LeftShift) && _spawn.canSpawn 
         && !(_cloneManager.clones.Count >= _cloneManager.maxClones) && spawnCooldown > 0.125f)
         {
             _cloneManager.AddClone(Instantiate(clonePrefab,
@@ -159,7 +179,7 @@ public class Clone : MonoBehaviour
             _as.PlayOneShot(spawnClone);
             spawnCooldown = 0;
         }
-        else if (Input.GetKeyDown(KeyCode.R) && !_spawn.canSpawn 
+        else if (Input.GetKeyDown(KeyCode.LeftShift) && !_spawn.canSpawn 
         && !(_cloneManager.clones.Count >= _cloneManager.maxClones) && spawnCooldown > 0.125f)
         {
             _cloneManager.AddClone(Instantiate(clonePrefab,
@@ -239,4 +259,12 @@ public class Clone : MonoBehaviour
     }
 
     public void PlayJump() => _as.PlayOneShot(jump);
+    public void ResetPowerUps() => speedPowerUp = jumpPowerup = false;
+
+    internal void SetGrabbed(Transform grabPos, bool v)
+    {
+        grabbed = v;
+        _rigidbody.isKinematic = true;
+        this.grabPos = grabPos;
+    }
 }

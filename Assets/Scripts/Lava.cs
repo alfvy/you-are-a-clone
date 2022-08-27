@@ -15,6 +15,7 @@ public class Lava : MonoBehaviour
                 GameManager.CloneManager.RemoveClone(col.gameObject);
                 Destroy(col.gameObject);
                 level.playerSpawner.RespawnPlayer();
+                level.Reset();
             } else if (GameManager.CloneManager.clones.Count > 1) {
                 GameManager.CloneManager.RemoveClone(col.gameObject);
                 Destroy(col.gameObject);

@@ -14,4 +14,6 @@ public class Condition : MonoBehaviour
         }
     }
     public Level level;
+
+    virtual public void SetState(bool state){}
 }

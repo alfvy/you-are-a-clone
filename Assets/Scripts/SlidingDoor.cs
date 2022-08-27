@@ -12,9 +12,7 @@ public class SlidingDoor : MonoBehaviour
     [SerializeField] AudioClip open, close;
     public Condition[] conditions;
     public Bool boolCondition;
-    // public bool needsKey;
-    // public Key key;
-
+    public bool startingState;
 
     private Animator _a;
     private BoxCollider2D _c;
@@ -33,25 +31,22 @@ public class SlidingDoor : MonoBehaviour
     {
         bool state;
 
-        // if (needsKey)
-        // {
-        //     return;
-        // } else {
-            state = boolCondition == Bool.And;
+        state = boolCondition == Bool.And;
 
-            foreach(var condition in conditions)
+        foreach(var condition in conditions)
+        {
+            switch(boolCondition)
             {
-                switch(boolCondition)
-                {
-                    case Bool.Or:
-                    state = state || condition.state;
-                        break;
-                    case Bool.And:
+                case Bool.Or:
+                state = state || condition.state;
+                    break;
+                case Bool.And:
+                if (!startingState)
                     state = state && condition.state;
-                        break;
-                }
+                else state = state && !condition.state;
+                break;
             }
-        // }
+        }
 
         _a.SetBool(Active, state);
     }

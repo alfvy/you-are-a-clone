@@ -25,15 +25,14 @@ public class CloneManager : MonoBehaviour
         if(clones.Count < 1) return;
         currentClone = clones.FirstOrDefault(c => c.controlled);
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            currentClone = clones.FirstOrDefault(c => c.controlled);
             bool found = false;
             clones.ForEach(c => c.controlled = false);
-            foreach (var clone in clones)
+            foreach (var clone in clones.Where(c=>!c.grabbed))
             {
                 Vector3 heading = clone.transform.position - currentClone.transform.position;
-		        if (AngleDir(transform.forward, heading, transform.up) == 1)
+                if (AngleDir(transform.forward, heading, transform.up) == 1)
                 {
                     clone.controlled = true;
                     clone.rb.velocity = Vector2.zero;
@@ -47,15 +46,14 @@ public class CloneManager : MonoBehaviour
             if (!found) clones.Any(c=> c.controlled = true);
         }
 
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            currentClone = clones.FirstOrDefault(c => c.controlled);
             bool found = false;
             clones.ForEach(c => c.controlled = false);
-            foreach (var clone in clones)
+            foreach (var clone in clones.Where(c=>!c.grabbed))
             {
                 Vector3 heading = clone.transform.position - currentClone.transform.position;
-		        if (AngleDir(transform.forward, heading, transform.up) == -1)
+                if (AngleDir(transform.forward, heading, transform.up) == -1)
                 {
                     clone.controlled = true;
                     clone.rb.velocity = Vector2.zero;
@@ -69,12 +67,33 @@ public class CloneManager : MonoBehaviour
             if( !found) clones.Any(c=> c.controlled = true);
         }
 
-        if (Input.GetKeyDown(KeyCode.Tab) && !(clones.Count <= 1))
+        if (Input.GetKeyDown(KeyCode.Tab))
         {   
-            var clone = clones.Aggregate((c1,c2) => c1.number > c2.number ? c1 : c2);
-            clones.Remove(clone);
-            Destroy(clone.gameObject);
-            if (clones.Count == 1) clones[0].controlled = true;
+            // var clone = clones.Aggregate((c1,c2) => c1.number > c2.number ? c1 : c2);
+            // clones.Remove(clone);
+            // Destroy(clone.gameObject);
+            // if (clones.Count == 1) clones[0].controlled = true;
+
+            if (clones.Count == 1)
+            {
+                RemoveClone(currentClone);
+                Destroy(currentClone.gameObject);
+                GameManager.currentLevel.playerSpawner.RespawnPlayer();
+                print("Reset Level");
+            } else if (clones.Count > 1)
+            {
+                clones.RemoveAll(c=>!c.controlled);
+                foreach(var clone in FindObjectsOfType<Clone>())
+                {
+                    if(!clone.controlled) Destroy(clone.gameObject);
+                }
+                RemoveClone(currentClone.gameObject);
+                Destroy(currentClone.gameObject);
+                GameManager.currentLevel.playerSpawner.RespawnPlayer();
+                print("Reset Level");
+            }
+
+            GameManager.currentLevel.Reset();
         }
     }
 

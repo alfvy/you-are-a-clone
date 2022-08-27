@@ -270,6 +270,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _state: 0
   level: {fileID: 0}
+  activated: {fileID: 21300000, guid: efd372327a248b44bbb380d2ada92125, type: 3}
   deactivated: {fileID: 21300000, guid: c0b36e9bd3722af47b8a2c88baf32132, type: 3}
   light: {fileID: 4692847115347391893}
 --- !u!61 &425986260127660079

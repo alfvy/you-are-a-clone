@@ -25,17 +25,24 @@ public class Button : Condition
 
     void LateUpdate()
     {
-        if (_c.IsTouchingLayers(PlayerMask) && Input.GetKeyDown(KeyCode.F) && !state) {
+        if (_c.IsTouchingLayers(PlayerMask) && Input.GetKeyDown(KeyCode.E) && !state) {
             _s.sprite = activated;
             light.enabled = true;
             state = true;
             _as.PlayOneShot(click);
-        } else if (_c.IsTouchingLayers(PlayerMask) && Input.GetKeyDown(KeyCode.F) && state) {
+        } else if (_c.IsTouchingLayers(PlayerMask) && Input.GetKeyDown(KeyCode.E) && state) {
             _s.sprite = deactivated;
             light.enabled = false;
             state = false;
             _as.PlayOneShot(lowClick);
         }        
+    }
+
+    public override void SetState(bool state)
+    {
+        this.state = state;
+        _s.sprite = state ? activated : deactivated;
+        light.enabled = state;
     }
 
     void OnTriggerStay2D(Collider2D other)

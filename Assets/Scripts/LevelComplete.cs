@@ -9,9 +9,10 @@ public class LevelComplete : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.gameObject.CompareTag("Player"))
+        if(other.gameObject.CompareTag("Player") && !level.completed)
         {
-            if (other.gameObject.GetComponent<Clone>().controlled)
+            var clone = other.gameObject.GetComponent<Clone>();
+            if (clone.controlled)
             {
                 level.completed = true;
                 GameManager.CloneManager.ChangeLevel(nextLevel);
@@ -20,6 +21,7 @@ public class LevelComplete : MonoBehaviour
                     PlayerPrefs.SetInt(GameManager.Level, level.number);
                     PlayerPrefs.Save();
                 }
+                clone.ResetPowerUps();
             }
         }    
     }

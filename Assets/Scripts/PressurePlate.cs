@@ -21,6 +21,13 @@ public class PressurePlate : Condition
         _as = GetComponent<AudioSource>();
     }
 
+    public override void SetState(bool state)
+    {
+        this.state = state;
+        _s.sprite = state ? activated : deactivated;
+        light.enabled = state;
+    }
+
     void OnTriggerEnter2D(Collider2D other)
     {
         if(other.gameObject.tag == "Player")

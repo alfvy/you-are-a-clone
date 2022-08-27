@@ -85,4 +85,22 @@ public class Level : MonoBehaviour
                 playerIsHere = false;
         }
     }
+
+    public void Reset()
+    {
+        foreach(var condition in transform.parent.gameObject.GetComponentsInChildren<Condition>())
+        {
+            condition.SetState(false);
+        }
+
+        foreach(var speed in transform.parent.gameObject.GetComponentsInChildren<SpeedPowerUp>())
+        {
+            speed.Reset();
+        }
+
+        foreach(var jump in transform.parent.gameObject.GetComponentsInChildren<JumpPowerUp>())
+        {
+            jump.Reset();
+        }
+    }
 }
