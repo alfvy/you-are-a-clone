@@ -20,14 +20,14 @@ public class JumpPad : MonoBehaviour
     }
 
 
-    // void OnTriggerEnter2D(Collider2D col)
-    // {
-    //     if (col.gameObject.tag == "Player")
-    //     {
-    //         col.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
-    //         _a.SetTrigger(Activate);
-    //     }
-    // }
+    void OnTriggerStay2D(Collider2D col)
+    {
+        if (col.gameObject.tag == "Player")
+        {
+            col.gameObject.GetComponent<Rigidbody2D>().AddForce(Vector2.up * jumpSpeed, ForceMode2D.Impulse);
+            _a.SetTrigger(Activate);
+        }
+    }
 
     void OnTriggerEnter2D(Collider2D col)
     {

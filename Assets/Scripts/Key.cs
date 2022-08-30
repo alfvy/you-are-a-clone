@@ -13,6 +13,7 @@ public class Key : Condition
         {
             other.GetComponent<Clone>().keys.Add(this);
             transform.position = new Vector2(1000, 1000);
+            GameManager.keyCount++;
             _as.Play();
         }    
     }

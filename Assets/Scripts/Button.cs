@@ -25,12 +25,12 @@ public class Button : Condition
 
     void LateUpdate()
     {
-        if (_c.IsTouchingLayers(PlayerMask) && Input.GetKeyDown(KeyCode.E) && !state) {
+        if (_c.IsTouchingLayers(PlayerMask) && (Input.GetKeyDown(KeyCode.E)  || Input.GetKeyDown(KeyCode.Keypad2) || Input.GetButtonDown("Fire1")) && !state) {
             _s.sprite = activated;
             light.enabled = true;
             state = true;
             _as.PlayOneShot(click);
-        } else if (_c.IsTouchingLayers(PlayerMask) && Input.GetKeyDown(KeyCode.E) && state) {
+        } else if (_c.IsTouchingLayers(PlayerMask) && (Input.GetKeyDown(KeyCode.E)  || Input.GetKeyDown(KeyCode.Keypad2) || Input.GetButtonDown("Fire1")) && state) {
             _s.sprite = deactivated;
             light.enabled = false;
             state = false;

@@ -55,7 +55,7 @@ public class Clone : MonoBehaviour
     private float _lastGroundedAtTime = -1f;
     private float spawnCooldown = 0;
     private float jumpBoost = 6;
-    private float speedBoost = 3;
+    private float speedBoost = 5;
 
     int Walking = Animator.StringToHash("Walking");
     int Jumping = Animator.StringToHash("Jumping");
@@ -125,7 +125,8 @@ public class Clone : MonoBehaviour
                 _rigidbody.velocity += Vector2.up * Physics2D.gravity.y * 2.5f * Time.deltaTime;
             
         } else if(grabbed) {
-            _transform.position = grabPos.position; 
+            try {_transform.position = grabPos.position;}
+            catch{} 
         } else {
             _rigidbody.velocity = new Vector2(_rigidbody.velocity.x * 0.25f, _rigidbody.velocity.y);
         }
@@ -143,11 +144,13 @@ public class Clone : MonoBehaviour
 
         if (grabbed && controlled)
         {
-            _cloneManager.clones.Find(c=> !c.grabbed || !c.controlled).controlled = true;
-            controlled = false;
+            try {
+            // _cloneManager.clones.Find(c=> !c.grabbed || !c.controlled).controlled = true;
+            grabbed = false;
+            }catch{controlled = true;}
         }
 
-        if (Input.GetKeyDown(KeyCode.Q) && grabbed)
+        if ((Input.GetKeyDown(KeyCode.Q)  || Input.GetKeyDown(KeyCode.Keypad3) || Input.GetButtonDown("Fire2")) && grabbed)
         {
             grabbed = false;
             _rigidbody.isKinematic = false;
@@ -162,11 +165,14 @@ public class Clone : MonoBehaviour
         if (Input.GetButton("Jump")) 
             _jumpTimer += Time.deltaTime;
 
-        if (Input.GetButtonDown("Jump") && (onGround || _lastOnGround))
+        if (Input.GetButtonDown("Jump")  && (onGround || _lastOnGround))
+        {
             PlayJump();
+            GameManager.jumpCount++;
+        }
 
         var spawnDirection = onGround ? Vector3.right : new Vector3(1f, direction > 0 ? -1f : 1f, 0f);
-        if (Input.GetKeyDown(KeyCode.LeftShift) && _spawn.canSpawn 
+        if ((Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.Keypad1) || Input.GetButtonDown("Fire3")) && _spawn.canSpawn 
         && !(_cloneManager.clones.Count >= _cloneManager.maxClones) && spawnCooldown > 0.125f)
         {
             _cloneManager.AddClone(Instantiate(clonePrefab,
@@ -178,8 +184,8 @@ public class Clone : MonoBehaviour
             }
             _as.PlayOneShot(spawnClone);
             spawnCooldown = 0;
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftShift) && !_spawn.canSpawn 
+            GameManager.cloneCount++;
+        } else if ((Input.GetKeyDown(KeyCode.R) || Input.GetKeyDown(KeyCode.Keypad1) || Input.GetButtonDown("Fire3")) && !_spawn.canSpawn 
         && !(_cloneManager.clones.Count >= _cloneManager.maxClones) && spawnCooldown > 0.125f)
         {
             _cloneManager.AddClone(Instantiate(clonePrefab,
@@ -191,6 +197,7 @@ public class Clone : MonoBehaviour
             }
             _as.PlayOneShot(spawnClone);
             spawnCooldown = 0;
+            GameManager.cloneCount++;
         }
 
         // if the player is ground and the jump counter is less than the apex of the jump

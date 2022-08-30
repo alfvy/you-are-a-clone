@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 821988617637285990}
   - component: {fileID: 1431973366158192238}
   - component: {fileID: -361889934655614707}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Sliding Door Horizontal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,8 +172,7 @@ MonoBehaviour:
   close: {fileID: 8300000, guid: 62381426c4ebd0641bd8137af6ca2956, type: 3}
   conditions: []
   boolCondition: 1
-  needsKey: 0
-  key: {fileID: 0}
+  startingState: 0
 --- !u!82 &-361889934655614707
 AudioSource:
   m_ObjectHideFlags: 0
@@ -185,7 +184,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

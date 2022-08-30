@@ -25,7 +25,7 @@ public class CloneManager : MonoBehaviour
         if(clones.Count < 1) return;
         currentClone = clones.FirstOrDefault(c => c.controlled);
 
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (Input.GetKeyDown(KeyCode.RightArrow) || Input.GetButtonDown("ShoulderLeft"))
         {
             bool found = false;
             clones.ForEach(c => c.controlled = false);
@@ -46,7 +46,7 @@ public class CloneManager : MonoBehaviour
             if (!found) clones.Any(c=> c.controlled = true);
         }
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Input.GetKeyDown(KeyCode.LeftArrow) || Input.GetButtonDown("ShoulderRight"))
         {
             bool found = false;
             clones.ForEach(c => c.controlled = false);
@@ -67,7 +67,7 @@ public class CloneManager : MonoBehaviour
             if( !found) clones.Any(c=> c.controlled = true);
         }
 
-        if (Input.GetKeyDown(KeyCode.Tab))
+        if (Input.GetKeyDown(KeyCode.Tab) || Input.GetButtonDown("Select"))
         {   
             // var clone = clones.Aggregate((c1,c2) => c1.number > c2.number ? c1 : c2);
             // clones.Remove(clone);
@@ -114,6 +114,8 @@ public class CloneManager : MonoBehaviour
     public void AddClone(GameObject newClone)
     {
         var clone = newClone.GetComponent<Clone>();
+        clone.jumpPowerup = false;
+        clone.speedPowerUp = false;
         clone.controlled = false;
         clones.Add(clone);
         clone.name = $"Clone {clones.Count - 1}";

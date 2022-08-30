@@ -42,6 +42,11 @@ public class GameStarter : MonoBehaviour
             Destroy(al);
             Destroy(this);
         }
+
+        foreach (GameObject go in levelObjects)
+        {
+            go.SetActive(false);
+        }
         // PlayerPrefs.SetInt(GameManager.PlayedBefore, 0);
         // PlayerPrefs.SetInt(GameManager.Level, 0);
         // PlayerPrefs.SetFloat(GameManager.PlayTime, 0);
@@ -64,11 +69,12 @@ public class GameStarter : MonoBehaviour
             go.SetActive(true);
         }
         cloneCounter.SetActive(true);
-        playerSpawner.SpawnPlayer();
         parallaxTrigger.SetActive(true);
         PlayerPrefs.SetInt(GameManager.PlayedBefore, 1);
         PlayerPrefs.Save();
         gameMusic.SetActive(true);
+        playerSpawner.SpawnPlayer();
+        // GameManager.VirtualCamera.Follow = playerSpawner.transform;
         Destroy(al);
         Destroy(this);
     }
@@ -92,9 +98,10 @@ public class GameStarter : MonoBehaviour
                 go.SetActive(true);
             }
             cloneCounter.SetActive(true);
-            loadLevel.playerSpawner.SpawnPlayer();
             parallaxTrigger.SetActive(true);
             gameMusic.SetActive(true);
+            // GameManager.VirtualCamera.Follow = loadLevel.playerSpawner.transform;
+            loadLevel.playerSpawner.SpawnPlayer();
             Destroy(al);
             Destroy(this);
         } catch {
@@ -111,9 +118,10 @@ public class GameStarter : MonoBehaviour
                 go.SetActive(true);
             }
             cloneCounter.SetActive(true);
-            playerSpawner.SpawnPlayer();
             parallaxTrigger.SetActive(true);
             gameMusic.SetActive(true);
+            // GameManager.VirtualCamera.Follow = playerSpawner.transform;
+            playerSpawner.SpawnPlayer();
             Destroy(al);
             Destroy(this);
         }

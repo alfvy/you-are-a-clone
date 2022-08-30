@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2146496678}
   - component: {fileID: 2146496677}
   - component: {fileID: 2826435520878911614}
-  m_Layer: 8
+  m_Layer: 11
   m_Name: SpawnChecker
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -388,7 +388,7 @@ MonoBehaviour:
   - {x: 0.1304332, y: -0.39130387, z: 0}
   m_ShapePathHash: 97769045
   m_Mesh: {fileID: 0}
-  m_InstanceId: 91534
+  m_InstanceId: 132520
 --- !u!82 &-8776252501139298044
 AudioSource:
   m_ObjectHideFlags: 0

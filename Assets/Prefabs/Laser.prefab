@@ -135,7 +135,6 @@ LineRenderer:
   m_Positions:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
-  - {x: -11.591845, y: -0.23432553, z: -9.293808}
   m_Parameters:
     serializedVersion: 3
     widthMultiplier: 1
@@ -208,6 +207,7 @@ MonoBehaviour:
   conditions: []
   defDistanceRay: 100
   firePoint: {fileID: 4237659257068963340}
+  startActivated: 0
 --- !u!114 &4237659255345020312
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -14,7 +14,7 @@ public class CloneGrabber : MonoBehaviour
         {
             var clone = other.gameObject.GetComponent<Clone>(); 
             if(clone.controlled) return;
-            if(Input.GetKey(KeyCode.Q))
+            if(Input.GetKey(KeyCode.Q)  || Input.GetKey(KeyCode.Keypad3) || Input.GetButton("Fire2"))
             {
                 clone.SetGrabbed(grabPos, true);
                 GetComponentInParent<Clone>().grabbing = true;

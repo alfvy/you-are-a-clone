@@ -9,7 +9,7 @@ public class Laser : MonoBehaviour
     public List<Condition> conditions;
     public float defDistanceRay = 100;
     public Transform firePoint;
-    private bool startActivated;
+    public bool startActivated;
     private LineRenderer _lineRenderer;
 
     // draw a line from the fire point to a hit on a raycast starting from the fire point
@@ -20,30 +20,6 @@ public class Laser : MonoBehaviour
 
     void Update()
     {
-        RaycastHit2D hit = Physics2D.Raycast(firePoint.position, firePoint.right, defDistanceRay, ~LayerMask.GetMask("Level"));
-        _lineRenderer.SetPosition(0, firePoint.position);
-        if (hit.collider != null)
-        {
-            _lineRenderer.SetPosition(1, hit.point);
-            if (hit.collider.gameObject.CompareTag("Player") && GameManager.CloneManager.clones.Count == 1)
-            {
-                GameManager.CloneManager.RemoveClone(hit.collider.gameObject);
-                Destroy(hit.collider.gameObject);
-                level.playerSpawner.RespawnPlayer();
-                level.Reset();
-                print("Died from a lazer");
-            } else if (hit.collider.gameObject.CompareTag("Player") && GameManager.CloneManager.clones.Count > 1)
-            {
-                GameManager.CloneManager.RemoveClone(hit.collider.gameObject);
-                Destroy(hit.collider.gameObject);
-                print("Died from a lazer");
-            }
-        }
-        else
-        {
-            _lineRenderer.SetPosition(1, firePoint.position + firePoint.right * defDistanceRay);
-        }
-
         var state = boolCondition == Bool.And;
 
         foreach(var condition in conditions)
@@ -59,6 +35,32 @@ public class Laser : MonoBehaviour
                 else state = state && condition.state;
                     break;
             }
+        }
+
+        RaycastHit2D hit = Physics2D.Raycast(firePoint.position, firePoint.right, defDistanceRay, ~LayerMask.GetMask("Level"));
+        _lineRenderer.SetPosition(0, firePoint.position);
+        if (hit.collider != null && (startActivated || state))
+        {
+            _lineRenderer.SetPosition(1, hit.point);
+            if (hit.collider.gameObject.CompareTag("Player") && GameManager.CloneManager.clones.Count == 1)
+            {
+                GameManager.CloneManager.RemoveClone(hit.collider.gameObject);
+                Destroy(hit.collider.gameObject);
+                level.playerSpawner.RespawnPlayer();
+                level.Reset();
+                print("Died from a lazer");
+                GameManager.deathCount++;
+            } else if (hit.collider.gameObject.CompareTag("Player") && GameManager.CloneManager.clones.Count > 1)
+            {
+                GameManager.CloneManager.RemoveClone(hit.collider.gameObject);
+                Destroy(hit.collider.gameObject);
+                print("Died from a lazer");
+                GameManager.deathCount++;
+            }
+        } else if (!startActivated || state) {
+            _lineRenderer.SetPosition(1, transform.position);
+        } else {
+            _lineRenderer.SetPosition(1, firePoint.position + firePoint.right * defDistanceRay);
         }
     }
 }

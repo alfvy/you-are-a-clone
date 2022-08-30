@@ -19,6 +19,14 @@ public class MainMenuUI : MonoBehaviour
         _a.CrossFade(Intro, 0, 0, 0, 0);
     }
 
+    public void LateUpdate()
+    {
+        if(Input.GetButtonDown("Start") || Input.GetKeyDown(KeyCode.Escape))
+        {
+            FindObjectOfType<GameStarter>().StartGame();
+        }
+    }
+
     public void Buttons(int i)
     {
         if(PlayerPrefs.GetInt(GameManager.PlayedBefore) == 1)

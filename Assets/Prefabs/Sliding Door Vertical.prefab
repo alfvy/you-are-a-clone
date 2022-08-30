@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 348759748029865987}
   - component: {fileID: 348759748029866046}
   - component: {fileID: 4832461905724468656}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Sliding Door Vertical
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,8 +172,7 @@ MonoBehaviour:
   close: {fileID: 8300000, guid: 62381426c4ebd0641bd8137af6ca2956, type: 3}
   conditions: []
   boolCondition: 0
-  needsKey: 0
-  key: {fileID: 0}
+  startingState: 0
 --- !u!82 &4832461905724468656
 AudioSource:
   m_ObjectHideFlags: 0
@@ -185,7 +184,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

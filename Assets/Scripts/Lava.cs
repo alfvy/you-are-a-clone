@@ -16,9 +16,11 @@ public class Lava : MonoBehaviour
                 Destroy(col.gameObject);
                 level.playerSpawner.RespawnPlayer();
                 level.Reset();
+                GameManager.deathCount++;
             } else if (GameManager.CloneManager.clones.Count > 1) {
                 GameManager.CloneManager.RemoveClone(col.gameObject);
                 Destroy(col.gameObject);
+                GameManager.deathCount++;
             }
 
             print("Died in Lava");
